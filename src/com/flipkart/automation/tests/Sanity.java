@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+
+
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
 
 public class Sanity {
 
@@ -42,7 +44,32 @@ public class Sanity {
 		
 		System.out.println(searchKey);
 		
+		//send the search string 
 		driver.findElement(By.name("q")).sendKeys(searchKey);
+		
+		//click submit
+		driver.findElement(By.name("q")).submit();
+		
+		
+		//click on mobile in the left pane to filter only mobile phones
+		driver.findElement(By.xpath("//*[@id='substores']//a[contains(text(),'Mobiles')]")).click();
+		
+		
+		String actualPrice = driver.findElement(By.cssSelector("div.pu-final")).getText();
+		
+		String expectedPrice = ExcelReader.getDataFromExcel("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx", 
+				"searchdata", 2, 3);
+		
+		Assert.assertEquals(actualPrice, expectedPrice);
+		
+		if(actualPrice.equals(expectedPrice)){
+			System.out.println("P");
+		}
+		else{
+			System.out.println("F");
+		}
+		
+		
 		
 
 		
