@@ -7,29 +7,56 @@ import java.util.Map;
 
 
 
+
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
+import org.testng.Reporter;
 
 public class Sanity {
 
 	WebDriver driver;
+	static ResultReporter reporter = ResultReporter.getInstance();
+	final String testDataXL = "C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx";
+	final String testDataSheetName = "Master" ;
+	
+	
 	public static void main(String[] args) {
 		
 		
-//		//1) Retrieve price of 
-//		//Moto G (3rd Generation)(Black, 16 GB) from 
-//		//"http://www.flipkart.com/"
-//		
+
+		
 		System.setProperty("webdriver.chrome.driver", "C:\\automation\\libs\\chromedriver_win32\\chromedriver.exe");
 //		
 		Sanity tests = new Sanity();
 		tests.driver = new ChromeDriver();
-		tests.runFlipKartDataDrivenExample();
 		
+		tests.runReportSample();
+		
+		
+	}
+	
+	public void runReportSample(){
+		
+		String strExpectedTitle = ExcelUtils.getDataFromExcel(testDataXL,testDataSheetName , 2, 2);
+		
+		driver.get("http://www.flipkart.com");
+			
+		if(strExpectedTitle.equals(driver.getTitle())){
+			
+			reporter.reportPass("open flipkart url", "should be opened", "opened successfully");
+		}
+		else
+		{
+			reporter.reportFail("open flipkart url", "should be opened", "could not open correct page"  );
+		}
+		
+		String searchKey = ExcelUtils.getDataFromExcel(testDataXL,testDataSheetName , 2, 3);
+		reporter.reportInfo("Enter search string " + searchKey, "", "");
 		
 	}
 	
@@ -37,10 +64,11 @@ public class Sanity {
 		
 		driver.get("http://www.flipkart.com");
 		
+		
 		//get search string from Excel Sheet
 		
-		String searchKey = ExcelReader.getDataFromExcel("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx", 
-				"searchdata", 2, 2);
+		
+		String searchKey = ExcelUtils.getDataFromExcel(testDataXL,testDataSheetName , 2, 3);
 		
 		System.out.println(searchKey);
 		
@@ -57,16 +85,16 @@ public class Sanity {
 		
 		String actualPrice = driver.findElement(By.cssSelector("div.pu-final")).getText();
 		
-		String expectedPrice = ExcelReader.getDataFromExcel("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx", 
+		String expectedPrice = ExcelUtils.getDataFromExcel("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx", 
 				"searchdata", 2, 3);
 		
 		Assert.assertEquals(actualPrice, expectedPrice);
 		
 		if(actualPrice.equals(expectedPrice)){
-			System.out.println("P");
+			System.out.println("Pass");
 		}
 		else{
-			System.out.println("F");
+			System.out.println("Fail");
 		}
 		
 		
@@ -132,7 +160,6 @@ Map<String, String> student1 = new HashMap<String, String>();
 			
 			
 		}
-	
 	
 	public void radioExample(){
 		

@@ -2,6 +2,8 @@ package com.flipkart.automation.tests;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExcelReader
+public class ExcelUtils
 {
 	//simple excel reading
 	public static String getDataFromExcel(String filePath, String sheetName, int rowIndex, int columnIndex){
@@ -37,6 +40,7 @@ public class ExcelReader
 		        XSSFSheet sheet = workBook.getSheet(sheetName);
 		        
 		        //connect to appropriate row
+		        sheet.getLastRowNum();
 		        Row row = sheet.getRow(rowIndex-1);
 		        
 		        //connect to appropriate cell
@@ -66,8 +70,6 @@ public class ExcelReader
 		
 	}
 	
-	
-
 	public static HashMap<String,String> getDataFromExcel(String filePath, String sheetName){
 		
 		
@@ -180,5 +182,73 @@ public class ExcelReader
 
         return outerMap;
 
+    }
+
+    public static void addRowToXL(String filePath, String sheetName,String[] cols){
+    	File xlFile = new File(filePath);
+    	
+    	
+		FileInputStream fis = null;
+		
+		if (!xlFile.exists()){
+			XSSFWorkbook wb =new XSSFWorkbook();
+			    FileOutputStream fileOut = null;
+				try {
+					fileOut = new FileOutputStream(filePath);
+					 wb.write(fileOut);
+					  fileOut.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			   
+		}
+		else{
+			
+		}
+		
+		
+		try{
+			    fis = new FileInputStream(xlFile);
+			 
+			 // Create an excel workbook from the file system
+		        XSSFWorkbook workBook = new XSSFWorkbook(fis);
+		        XSSFSheet sheet;
+		        
+		        if (workBook.getSheetIndex(sheetName)==-1){
+		        	 //connect to appropriate sheet by name
+		        	sheet = workBook.createSheet(sheetName);
+		        	Row header = sheet.createRow(0);
+		        	header.createCell(0).setCellValue("#");
+		        	header.createCell(1).setCellValue("Status");
+		        	header.createCell(2).setCellValue("Description");
+		        	header.createCell(3).setCellValue("Expected");
+		        	header.createCell(4).setCellValue("Actual");
+		        			
+		        }
+		        else
+		        {
+		        	 //connect to appropriate sheet by name
+			        sheet = workBook.getSheet(sheetName);
+		        }
+		        
+		        //connect to appropriate row
+		        Row row = sheet.createRow(sheet.getLastRowNum()+1);
+		        
+		        for(int j = 0;j< cols.length;j++){
+		        	row.createCell(j).setCellValue(cols[j]);
+		        }
+		        FileOutputStream fileOut = new FileOutputStream(filePath);
+				workBook.write(fileOut);
+			    fileOut.close();
+    	}
+		catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		
     }
 }
