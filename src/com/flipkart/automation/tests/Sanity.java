@@ -1,5 +1,7 @@
 package com.flipkart.automation.tests;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +11,17 @@ import java.util.Map;
 
 
 
+
+
+
+
+
+
+
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,25 +29,25 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.Reporter;
 
+import com.flipkart.automation.pages.BasePage;
+import com.flipkart.automation.pages.FlipKartHomePage;
+
 public class Sanity {
 
 	WebDriver driver;
+	
 	static ResultReporter reporter = ResultReporter.getInstance();
 	final String testDataXL = "C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx";
 	final String testDataSheetName = "Master" ;
 	
 	
 	public static void main(String[] args) {
+				
+		BasePage.initChromeDriver();	
 		
-		
-
-		
-		System.setProperty("webdriver.chrome.driver", "C:\\automation\\libs\\chromedriver_win32\\chromedriver.exe");
-//		
-		Sanity tests = new Sanity();
-		tests.driver = new ChromeDriver();
-		
-		tests.runReportSample();
+		FlipKartHomePage homepage = new FlipKartHomePage();
+		homepage.openURL();
+		homepage.clickLogin();
 		
 		
 	}
@@ -52,11 +64,16 @@ public class Sanity {
 		}
 		else
 		{
-			reporter.reportFail("open flipkart url", "should be opened", "could not open correct page"  );
+			reporter.reportFailWithSnapshot("open flipkart url", "should be opened", "could not open correct page" ,driver );
 		}
 		
 		String searchKey = ExcelUtils.getDataFromExcel(testDataXL,testDataSheetName , 2, 3);
 		reporter.reportInfo("Enter search string " + searchKey, "", "");
+		
+		//screenshot
+	//	File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		
+		
 		
 	}
 	
@@ -85,10 +102,9 @@ public class Sanity {
 		
 		String actualPrice = driver.findElement(By.cssSelector("div.pu-final")).getText();
 		
-		String expectedPrice = ExcelUtils.getDataFromExcel("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx", 
-				"searchdata", 2, 3);
+		String expectedPrice = ExcelUtils.getDataFromExcel(testDataXL, testDataSheetName, 2, 4);
 		
-		Assert.assertEquals(actualPrice, expectedPrice);
+		//Assert.assertEquals(actualPrice, expectedPrice); // not recommended
 		
 		if(actualPrice.equals(expectedPrice)){
 			System.out.println("Pass");
@@ -97,14 +113,10 @@ public class Sanity {
 			System.out.println("Fail");
 		}
 		
-		
-		
-
-		
 	}
 	
 	public void mapExample(){
-Map<String, String> student1 = new HashMap<String, String>();
+        Map<String, String> student1 = new HashMap<String, String>();
 		
 		student1.put("id", "1");
 		student1.put("name", "studen1");

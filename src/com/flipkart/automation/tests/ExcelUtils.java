@@ -23,6 +23,51 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtils
 {
+	
+	public static void main(String[] args) throws Exception {
+		
+		//java.io
+		File xlFile = new File("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx");
+		FileInputStream fis = new FileInputStream(xlFile);		
+		XSSFWorkbook workBook = new XSSFWorkbook(fis);
+		
+//		//for input or outpu
+//		FileOutputStream fiso = new FileOutputStream(xlFile);
+//		
+//		fileOut = new FileOutputStream(filePath);
+//		 wb.write(fileOut);
+//		  fileOut.close();
+		
+	
+		
+		
+////		
+////		HSSFWorkbook << MS EXCEL 2003 .xls
+////		
+////		XSSFWorkbook <<2007 + , .xlsx
+//
+//		//java.io
+//		File xlFile = new File("C:\\automation\\Eclipse_WS\\PracticeSessions\\TestData.xlsx");
+//		
+//		//for input or outpu
+//		FileInputStream fis = new FileInputStream(xlFile);
+//		
+//		
+//		//apache poi
+//		XSSFWorkbook workBook = new XSSFWorkbook(fis);
+//		
+//		 //connect to appropriate sheet by name
+//        XSSFSheet sheet = workBook.getSheet("Master");
+//        
+//        Row row = sheet.getRow(1);
+//        
+//        Cell cell = row.getCell(1);
+//        
+//        System.out.println(cell.getStringCellValue());
+        
+		
+	}
+	
 	//simple excel reading
 	public static String getDataFromExcel(String filePath, String sheetName, int rowIndex, int columnIndex){
 		
@@ -40,7 +85,8 @@ public class ExcelUtils
 		        XSSFSheet sheet = workBook.getSheet(sheetName);
 		        
 		        //connect to appropriate row
-		        sheet.getLastRowNum();
+//		        sheet.getLastRowNum();
+		        
 		        Row row = sheet.getRow(rowIndex-1);
 		        
 		        //connect to appropriate cell
@@ -185,13 +231,18 @@ public class ExcelUtils
     }
 
     public static void addRowToXL(String filePath, String sheetName,String[] cols){
+    	
+    	
     	File xlFile = new File(filePath);
     	
     	
 		FileInputStream fis = null;
 		
 		if (!xlFile.exists()){
+			
+			
 			XSSFWorkbook wb =new XSSFWorkbook();
+			
 			    FileOutputStream fileOut = null;
 				try {
 					fileOut = new FileOutputStream(filePath);
@@ -207,7 +258,7 @@ public class ExcelUtils
 			   
 		}
 		else{
-			
+			//do nothing
 		}
 		
 		
@@ -218,10 +269,11 @@ public class ExcelUtils
 		        XSSFWorkbook workBook = new XSSFWorkbook(fis);
 		        XSSFSheet sheet;
 		        
-		        if (workBook.getSheetIndex(sheetName)==-1){
+		        if (workBook.getSheetIndex(sheetName)==-1){ // new file 
 		        	 //connect to appropriate sheet by name
 		        	sheet = workBook.createSheet(sheetName);
 		        	Row header = sheet.createRow(0);
+		        
 		        	header.createCell(0).setCellValue("#");
 		        	header.createCell(1).setCellValue("Status");
 		        	header.createCell(2).setCellValue("Description");

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 //adding comments
 
@@ -47,7 +50,7 @@ public class ResultReporter {
 		}
 	   
 	   /* Other methods protected by singleton-ness */
-	   protected  void reportFail(String stepDesc, String expectedResult, String actualResult ) {
+	   protected  void reportFailWithSnapshot(String stepDesc, String expectedResult, String actualResult , WebDriver driver) {
 	      
 		   StringBuilder sb = new StringBuilder();
 		   
@@ -60,6 +63,26 @@ public class ResultReporter {
 		   
 		   ExcelUtils.addRowToXL(resultWB, resultSht, new String[]{ ""+counter,"Failed",stepDesc,expectedResult,actualResult});
 		   
+		   System.out.println(sb);
+		   
+		   counter++;
+		}
+	
+	   
+	   
+	   /* Other methods protected by singleton-ness */
+	   protected  void reportFail(String stepDesc, String expectedResult, String actualResult ) {
+	      
+		   StringBuilder sb = new StringBuilder();
+		   
+		   
+		   sb.append("Step #: " ).append(counter);
+		   sb.append(" | Step Status: " ).append("Fail");
+		   sb.append(" | Step Desc:" ).append(stepDesc);
+		   sb.append(" | Expected Result: ").append(expectedResult);
+		   sb.append(" | Actual Result: ").append(actualResult);
+		   
+		   ExcelUtils.addRowToXL(resultWB, resultSht, new String[]{ ""+counter,"Failed",stepDesc,expectedResult,actualResult});
 		   
 		   System.out.println(sb);
 		   
